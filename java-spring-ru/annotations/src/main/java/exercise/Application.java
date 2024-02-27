@@ -11,9 +11,7 @@ public class Application {
 
         for (Method method : Address.class.getMethods()) {
             if (method.isAnnotationPresent(Inspect.class)) {
-                String typeClassName = method.getReturnType().getName();
-                typeClassName = typeClassName.contains(".") ? typeClassName.substring(typeClassName.lastIndexOf(".") + 1) : typeClassName;
-                System.out.println("Method " + method.getName() + " returns a value of type " + typeClassName);
+                System.out.println("Method " + method.getName() + " returns a value of type " + method.getReturnType().getSimpleName());
             }
         }
     }

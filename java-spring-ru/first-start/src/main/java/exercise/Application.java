@@ -18,4 +18,4 @@ public class Application {
     public static String getAbout() {
         return about;
     }
-}h
+}

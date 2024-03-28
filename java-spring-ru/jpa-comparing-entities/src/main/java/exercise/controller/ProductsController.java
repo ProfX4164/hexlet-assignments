@@ -34,11 +34,10 @@ public class ProductsController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Product create(@RequestBody Product product) {
-        if (productRepository.findAll().stream().filter(p -> p.equals(product)).findFirst().isEmpty()){
-            return productRepository.save(product);
-        } else {
-            throw new ResourceAlreadyExistsException("Product already exists");
+        if (productRepository.findAll().contains(product)) {
+            throw new ResourceAlreadyExistsException("Product " + product.getTitle() + " already exists");
         }
+        return productRepository.save(product);
     }
 
     @GetMapping(path = "/{id}")

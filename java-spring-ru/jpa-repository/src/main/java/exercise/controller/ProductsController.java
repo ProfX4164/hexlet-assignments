@@ -21,8 +21,9 @@ public class ProductsController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Product> showAllByPrices(@RequestParam(defaultValue = "0") int min, @RequestParam(defaultValue = "100") int max) {
-        return productRepository.findAllByPriceBetweenOrderByPrice(min, max);
+    public List<Product> showAllByPrices(@RequestParam(defaultValue = Integer.MIN_VALUE + "") int min, @RequestParam(defaultValue = Integer.MAX_VALUE + "") int max) {
+        Sort sort = Sort.by(Sort.Order.asc("price"));
+        return productRepository.findByPriceBetween(min, max, sort);
     }
 
     @GetMapping(path = "/{id}")

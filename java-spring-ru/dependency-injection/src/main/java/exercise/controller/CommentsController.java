@@ -27,7 +27,7 @@ public class CommentsController {
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Comment get(@PathVariable Long id) {
-        return commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment with id "+id+" is not found"));
+        return commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment with id " + id + " not found"));
     }
 
     @PostMapping
@@ -39,7 +39,7 @@ public class CommentsController {
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Comment update(@PathVariable Long id, @RequestBody Comment comment) {
-        Comment existedComment = commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment with id "+id+" is not found"));
+        Comment existedComment = commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment with id "+id+" not found"));
         existedComment.setBody(comment.getBody());
         return commentRepository.save(existedComment);
     }
@@ -48,7 +48,7 @@ public class CommentsController {
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable Long id) {
         if (commentRepository.findById(id).isEmpty()) {
-            throw new ResourceNotFoundException("Comment with id " + id + " is not found");
+            throw new ResourceNotFoundException("Comment with id " + id + " not found");
         }
         commentRepository.deleteById(id);
     }

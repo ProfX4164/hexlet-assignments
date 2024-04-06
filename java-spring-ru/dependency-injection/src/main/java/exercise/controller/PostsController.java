@@ -37,7 +37,7 @@ public class PostsController {
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Post get(@PathVariable Long id) {
-        return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post with id "+id+" is not found"));
+        return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post with id "+id+" not found"));
     }
 
     @PostMapping
@@ -49,9 +49,9 @@ public class PostsController {
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Post update(@PathVariable Long id, @RequestBody Post post) {
-        Post existedPost = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post with id "+id+" is not found"));
+        Post existedPost = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post with id "+id+" not found"));
         existedPost.setBody(post.getBody());
-        existedPost.setTitle(post.getBody());
+        existedPost.setTitle(post.getTitle());
         return postRepository.save(existedPost);
     }
 
@@ -59,7 +59,7 @@ public class PostsController {
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable Long id) {
         if (postRepository.findById(id).isEmpty()) {
-            throw new ResourceNotFoundException("Post with id " + id + " is not found");
+            throw new ResourceNotFoundException("Post with id " + id + " not found");
         }
         postRepository.deleteById(id);
         commentRepository.deleteByPostId(id);

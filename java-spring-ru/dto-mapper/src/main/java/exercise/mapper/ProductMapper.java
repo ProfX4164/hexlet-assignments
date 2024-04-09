@@ -4,11 +4,13 @@ import exercise.dto.ProductCreateDTO;
 import exercise.dto.ProductDTO;
 import exercise.dto.ProductUpdateDTO;
 import exercise.model.Product;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface ProductMapper {
     @Mapping(source = "name", target = "title")
     @Mapping(source = "cost", target = "price")

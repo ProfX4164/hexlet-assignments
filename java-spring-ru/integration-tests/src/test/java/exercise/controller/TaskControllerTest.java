@@ -70,46 +70,73 @@ class ApplicationTest {
     }
 
     @Test
-    public void showTask() throws Exception {
-        Task task = generateTask();
+    public void testShow() throws Exception {
+
+        var task = generateTask();
         taskRepository.save(task);
 
-        var result = mockMvc.perform(get("/tasks/" + task.getId()))
+        var request = get("/tasks/{id}", task.getId());
+        var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
+        var body = result.getResponse().getContentAsString();
+
+        assertThatJson(body).and(
+                v -> v.node("title").isEqualTo(task.getTitle()),
+                v -> v.node("description").isEqualTo(task.getDescription())
+        );
     }
 
     @Test
-    public void createTask() throws Exception {
-        Task task = generateTask();
-        taskRepository.save(task);
+    public void testCreate() throws Exception {
+        var data = generateTask();
 
-        var result = mockMvc.perform(post("/tasks")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsBytes(task)))
-                .andExpect(status().isCreated())
-                .andReturn();
+        var request = post("/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(data));
+
+        mockMvc.perform(request)
+                .andExpect(status().isCreated());
+
+        var task = taskRepository.findByTitle(data.getTitle()).get();
+
+        assertThat(task).isNotNull();
+        assertThat(task.getTitle()).isEqualTo(data.getTitle());
+        assertThat(task.getDescription()).isEqualTo(data.getDescription());
     }
 
     @Test
-    public void updateTask() throws Exception {
-        Task task = generateTask();
+    public void testUpdate() throws Exception {
+        var task = generateTask();
         taskRepository.save(task);
 
-        var result = mockMvc.perform(put("/tasks/"+task.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsBytes(task)))
-                .andExpect(status().isOk())
-                .andReturn();
+        var data = new HashMap<>();
+        data.put("title", "new title");
+
+        var request = put("/tasks/{id}", task.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(data));
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk());
+
+        task = taskRepository.findById(task.getId()).get();
+
+        assertThat(task.getTitle()).isEqualTo(data.get("title"));
     }
 
     @Test
-    public void deleteTask() throws Exception {
-        Task task = generateTask();
+    public void testDelete() throws Exception {
+
+        var task = generateTask();
         taskRepository.save(task);
 
-        var result = mockMvc.perform(delete("/tasks/"+task.getId()))
-                .andExpect(status().isOk())
-                .andReturn();
+        var request = delete("/tasks/{id}", task.getId());
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk());
+
+        task = taskRepository.findById(task.getId()).orElse(null);
+        assertThat(task).isNull();
     }
 }
